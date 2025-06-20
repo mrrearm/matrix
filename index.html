@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matrix Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow-x: hidden;
+            cursor: crosshair;
+            scroll-behavior: smooth;
+        }
+        
+        /* Matrix Rain Effect */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        
+        .matrix-column {
+            position: absolute;
+            top: -100px;
+            font-size: 18px;
+            color: rgba(0, 255, 0, 0.3);
+            animation: matrixRain linear infinite;
+            text-shadow: 0 0 5px rgba(0, 255, 0, 0.2);
+            writing-mode: vertical-rl;
+            text-orientation: upright;
+        }
+        
+        @keyframes matrixRain {
+            0% { transform: translateY(-100vh); opacity: 1; }
+            100% { transform: translateY(100vh); opacity: 0; }
+        }
+        
+        /* Video Overlay */
+        .video-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            z-index: 1000;
+            display: none;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .video-container {
+            position: relative;
+            width: 80%;
+            max-width: 800px;
+            aspect-ratio: 16/9;
+        }
+        
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+            border: 2px solid #00ff00;
+            box-shadow: 0 0 20px #00ff00;
+        }
+        
+        .close-video {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: #000;
+            color: #00ff00;
+            border: 2px solid #00ff00;
+            padding: 10px 20px;
+            cursor: pointer;
+            font-family: 'Orbitron', monospace;
+            text-transform: uppercase;
+            transition: all 0.3s;
+        }
+        
+        .close-video:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            z-index: 100;
+            border-bottom: 1px solid #00ff00;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #00ff00;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #00ff00;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            transition: all 0.3s;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+        
+        .nav-links a:hover {
+            border-color: #00ff00;
+            box-shadow: 0 0 15px #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        /* Main Content */
+        main {
+            padding-top: 80px;
+            padding-bottom: 40px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+        
+        .section {
+            margin-bottom: 60px;
+            padding: 30px;
+            border: 1px solid #00ff00;
+            background: rgba(0, 0, 0, 0.8);
+            position: relative;
+            transition: all 0.5s;
+            scroll-margin-top: 80px;
+        }
+        
+        /* Modifica specifica per la sezione home */
+        #home {
+            padding-top: 100px; /* Aggiunto più spazio sopra */
+            margin-top: 40px; /* Aggiunto margine superiore */
+        }
+        
+        .section::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, transparent, #00ff00);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+        }
+        
+        .section:hover::before {
+            opacity: 1;
+        }
+        
+        .section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 255, 0, 0.3);
+        }
+        
+        .section h2 {
+            font-size: 32px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-align: center;
+            text-shadow: 0 0 15px #00ff00;
+            animation: glitch 3s infinite;
+        }
+        
+        @keyframes glitch {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-2px); }
+            40% { transform: translateX(2px); }
+            60% { transform: translateX(-1px); }
+            80% { transform: translateX(1px); }
+        }
+        
+        .section p {
+            font-size: 16px;
+            line-height: 1.7;
+            margin-bottom: 20px;
+            text-align: left;
+            opacity: 0.9;
+        }
+        
+        .code-line {
+            font-family: 'Courier New', monospace;
+            color: rgba(0, 255, 0, 0.6);
+            background: rgba(0, 255, 0, 0.05);
+            padding: 10px;
+            margin: 20px 0;
+            border-left: 3px solid rgba(0, 255, 0, 0.3);
+            animation: typing 4s steps(40) infinite;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        @keyframes typing {
+            0% { width: 0; }
+            50% { width: 100%; }
+            100% { width: 0; }
+        }
+        
+        /* Resource List Styles */
+        .resource-list {
+            list-style: none;
+            counter-reset: resource-counter;
+            margin: 30px 0;
+        }
+        
+        .resource-list li {
+            counter-increment: resource-counter;
+            margin-bottom: 20px;
+            padding: 20px;
+            border: 1px solid #00ff00;
+            background: rgba(0, 255, 0, 0.05);
+            position: relative;
+            transition: all 0.3s;
+        }
+        
+        .resource-list li::before {
+            content: counter(resource-counter, decimal-leading-zero);
+            position: absolute;
+            left: -15px;
+            top: 20px;
+            background: #00ff00;
+            color: #000;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 0 10px #00ff00;
+        }
+        
+        .resource-list li:hover {
+            background: rgba(0, 255, 0, 0.1);
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .resource-list li p {
+            margin-bottom: 10px;
+            font-size: 14px;
+            opacity: 0.8;
+        }
+        
+        .resource-list li a {
+            color: #00ff00;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border: 1px solid #00ff00;
+            padding: 5px 15px;
+            display: inline-block;
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .resource-list li a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: #00ff00;
+            transition: left 0.3s;
+            z-index: -1;
+        }
+        
+        .resource-list li a:hover::before {
+            left: 0;
+        }
+        
+        .resource-list li a:hover {
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 15px #00ff00;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            main {
+                padding-top: 140px;
+            }
+            
+            .section {
+                padding: 25px 15px;
+                margin-bottom: 40px;
+                scroll-margin-top: 140px;
+            }
+            
+            #home {
+                padding-top: 80px; /* Modifica per mobile */
+                margin-top: 20px;
+            }
+            
+            .section h2 {
+                font-size: 26px;
+            }
+            
+            .video-container {
+                width: 95%;
+            }
+            
+            .close-video {
+                top: -30px;
+                right: -10px;
+                padding: 5px 10px;
+                font-size: 12px;
+            }
+            
+            .scroll-to-top {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 20px;
+            }
+            
+            .footer-text {
+                font-size: 14px;
+            }
+            
+            .footer-code {
+                font-size: 12px;
+                padding: 8px 15px;
+            }
+            
+            .social-container {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 15px;
+                margin-top: 20px;
+            }
+            
+            .social-icon {
+                padding: 20px 10px;
+                min-height: 100px;
+            }
+            
+            .social-icon-symbol {
+                font-size: 28px;
+                margin-bottom: 8px;
+            }
+            
+            .social-icon-name {
+                font-size: 10px;
+                letter-spacing: 1px;
+            }
+            
+            .resource-list li {
+                padding: 15px;
+                margin-left: 20px;
+            }
+            
+            .resource-list li::before {
+                left: -10px;
+                width: 25px;
+                height: 25px;
+                font-size: 12px;
+            }
+        }
+        
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-to-top:hover {
+            background: #00ff00;
+            color: #000;
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+        }
+        
+        .scroll-to-top::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, transparent, #00ff00);
+            border-radius: 50%;
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .scroll-to-top:hover::before {
+            opacity: 1;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 1px solid #00ff00;
+            padding: 40px 20px;
+            text-align: center;
+            margin-top: 60px;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            animation: footerGlow 3s infinite;
+        }
+        
+        @keyframes footerGlow {
+            0%, 100% { opacity: 0.5; }
+            50% { opacity: 1; }
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-text {
+            font-family: 'Orbitron', monospace;
+            color: #00ff00;
+            font-size: 16px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px #00ff00;
+            opacity: 0.9;
+        }
+        
+        .footer-code {
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 10px 20px;
+            margin: 20px auto;
+            border: 1px solid #00ff00;
+            max-width: 400px;
+            animation: footerPulse 2s infinite;
+        }
+        
+        @keyframes footerPulse {
+            0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 0, 0.3); }
+            50% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.6); }
+        }
+        
+        /* Social Icons */
+        .social-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        
+        .social-icon {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #00ff00;
+            transition: all 0.4s;
+            padding: 25px 15px;
+            border: 2px solid #00ff00;
+            background: rgba(0, 0, 0, 0.8);
+            position: relative;
+            overflow: hidden;
+            min-height: 120px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, transparent, #00ff00, transparent, #00ff00);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+            animation: borderRotate 3s linear infinite;
+        }
+        
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .social-icon:hover::before {
+            opacity: 1;
+        }
+        
+        .social-icon::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.2), transparent);
+            transition: left 0.6s;
+        }
+        
+        .social-icon:hover::after {
+            left: 100%;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-8px) scale(1.05);
+            box-shadow: 0 15px 40px rgba(0, 255, 0, 0.4);
+            text-shadow: 0 0 20px #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        .social-icon-symbol {
+            font-size: 36px;
+            margin-bottom: 12px;
+            font-weight: bold;
+            text-shadow: 0 0 15px #00ff00;
+            animation: iconPulse 2s infinite;
+        }
+        
+        @keyframes iconPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+        
+        .social-icon:hover .social-icon-symbol {
+            animation: iconSpin 0.6s ease-in-out;
+        }
+        
+        @keyframes iconSpin {
+            0% { transform: rotate(0deg) scale(1); }
+            50% { transform: rotate(180deg) scale(1.2); }
+            100% { transform: rotate(360deg) scale(1); }
+        }
+        
+        .social-icon-name {
+            font-family: 'Orbitron', monospace;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 700;
+            opacity: 0.9;
+        }
+        
+        /* Custom Social Icons */
+        .facebook .social-icon-symbol {
+            font-family: 'Orbitron', sans-serif;
+            content: "F";
+        }
+        
+        .instagram .social-icon-symbol {
+            position: relative;
+            width: 30px;
+            height: 30px;
+            border: 2px solid #00ff00;
+            border-radius: 8px;
+        }
+        
+        .instagram .social-icon-symbol::before {
+            content: '';
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border: 2px solid #00ff00;
+            border-radius: 50%;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+        }
+        
+        .instagram .social-icon-symbol::after {
+            content: '';
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #00ff00;
+            border-radius: 50%;
+            top: 20%;
+            right: 20%;
+        }
+        
+        .tiktok .social-icon-symbol {
+            font-family: 'Orbitron', sans-serif;
+            content: "J";
+        }
+        
+        .youtube .social-icon-symbol {
+            font-size: 36px;
+            content: "▶";
+        }
+        
+        .github .social-icon-symbol {
+            font-family: 'Orbitron', sans-serif;
+            content: "G";
+        }
+        
+        .twitter .social-icon-symbol {
+            font-family: 'Orbitron', sans-serif;
+            content: "X";
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <!-- Matrix Rain Background -->
+    <div class="matrix-bg" id="matrixBg"></div>
+    
+    <!-- Video Overlay -->
+    <div class="video-overlay" id="videoOverlay">
+        <div class="video-container">
+            <button class="close-video" onclick="closeVideo()">✕ Close</button>
+            <iframe id="videoFrame" src="" frameborder="0" allowfullscreen></iframe>
+        </div>
+    </div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Matrix</div>
+            <ul class="nav-links">
+                <li><a href="#home">Home</a></li>
+                <li><a href="#about">About</a></li>
+                <li><a href="#services">Servizi</a></li>
+                <li><a href="#resources">Risorse</a></li>
+                <li><a href="#contact">Contatti</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <!-- Home Section -->
+            <section class="section" id="home">
+                <h2>Benvenuti su Matrix!</h2>
+                <div class="code-line">> Svegliati.Neo.Wake Up()</div>
+                <p>Creatore digitale • Appassionato di tecnologia • Produttore di contenuti.</p>
+                <p>Benvenuti nel mio regno digitale. Esploro l'intersezione tra tecnologia, creatività e innovazione. Creo contenuti che colmano il divario tra le possibilità presenti e le realtà future.</p>
+                <div class="code-line">> Segui.il(bian_coniglio)</div>
+            </section>
+            
+            <!-- About Section -->
+            <section class="section" id="about">
+                <h2>Chi siamo?</h2>
+                <div class="code-line">> Scopri quanto è grande la tana del bian coniglio.</div>
+                <p>Mr Rearm nasce dalla passione per l'innovazione tecnologica con l'obbiettivo di rivoluzionare il modo in cui interagiamo con la tecnologia quotidiana.</p>
+                <p>Il nostro team è formato da un gruppo di professionisti, designer e sviluppatori uniti dalla visione comune di creare prodotti che semplifichino la vita attraverso la tecnologia.</p>
+                <div class="code-line">>Hai mai fatto un sogno tanto realistico da sembrarti vero?</div>
+            </section>
+            
+            <!-- Services Section -->
+            <section class="section" id="services">
+                <h2>Servizi</h2>
+                <div class="code-line">>E se da un sogno così non dovessi più svegliarti, come potresti distinguere il mondo dei sogni dalla realtà?()</div>
+                <p>Progettazione e realizzazione di siti custom utili per ogni esigenza, HTML5, i framework più gettonati ma anche CMS all'avanguardia come WordPress e Joomla.</p>
+                <p>Creiamo brochure e presentazioni elettroniche per mostrare la tua idea in un modo elegante e innovativo. Offriamo consulenza, soluzioni personalizzate per integrare le ultime tecnologie nel tuo business.</p>
+                <div class="code-line">>Non pensare di esserlo… convinciti di esserlo…</div>
+            </section>
+            
+            <!-- Resources Section -->
+            <section class="section" id="resources">
+                <h2>Risorse Utili</h2>
+                <div class="code-line">>Cerco di aprirti la mente, Neo, ma posso solo indicarti la soglia. Sei tu quello che la deve attraversare.()</div>
+                <ol class="resource-list">
+                    <li>
+                        <p>Animazione Matrix in 3 diverse versioni: verde, multicolor, blu, scelta della velocità e della densità.</p>
+                        <a href="https://mrrearm.github.io/matrixanimation/" target="_blank">Matrix Animation</a>
+                    </li>
+                    <li>
+                        <p>FlyBy11, per installare Windows 11 bypassando le restrizioni sull'hardware non supportato</p>
+                        <a href="https://mega.nz/file/B2J3BZaB#ZI0yaUMKuY4Q-pEOgxhcgJxJE9clh4v5tFZYzwLbrUA" target="_blank">FlyBy11</a>
+                    </li>
+                    <li>
+                        <p>File Bat per il backup dei driver su Windows.</p>
+                        <a href="https://mega.nz/file/Uqohxbrb#8x8QMdTky88fAqz9PIjlaPBlW4b6mtcJRN6FVO9mudQ" target="_blank">Backup Driver</a>
+                    </li>
+                    <li>
+                        <p>Ninite, creare un installer online con la scelta dei programmi che ci occorrono.</p>
+                        <a href="https://ninite.com/" target="_blank">Ninite</a>
+                    </li>
+                    <li>
+                        <p>Generatore Cookie Banner & GDPR e controllo conformità GDPR dei siti.</p>
+                        <a href="https://mrrearm.github.io/gdpr/" target="_blank">Generatore GDPR</a>
+                    </li>
+                    <li>
+                        <p>YouTube Embed Generator - Converti facilmente i link di YouTube in codice embed personalizzabile.</p>
+                        <a href="https://mrrearm.github.io/embed" target="_blank">Generatore Codice Embed YouTube</a>
+                    </li>
+                    <li>
+                        <p>Wame, generare un link alla chat Whatsapp.</p>
+                        <a href="https://mrrearm.github.io/wame" target="_blank">Wame - Link alla chat Whatsapp</a>
+                    </li>
+                </ol>
+                <div class="code-line">>Prendi la pillola rossa e scoprirai quanto è grande la tana del bian coniglio</div>
+            </section>
+            
+            <!-- Contact Section -->
+            <section class="section" id="contact">
+                <h2>Segui il bian coniglio</h2>
+                <div class="code-line">>Credi sia aria quella che respiri ora?()</div>
+                <div class="social-container">
+                    <a href="https://facebook.com/mrrearm" class="social-icon facebook" target="_blank">
+                        <div class="social-icon-symbol">F</div>
+                        <div class="social-icon-name">Facebook</div>
+                    </a>
+                    <a href="https://instagram.com/mrrearm" class="social-icon instagram" target="_blank">
+                        <div class="social-icon-symbol"></div>
+                        <div class="social-icon-name">Instagram</div>
+                    </a>
+                    <a href="https://www.tiktok.com/@raydrearm?_t=ZN-8xMCGs79DhG&_r=1" class="social-icon tiktok" target="_blank">
+                        <div class="social-icon-symbol">J</div>
+                        <div class="social-icon-name">TikTok</div>
+                    </a>
+                    <a href="https://youtube.com/@mrrearm" class="social-icon youtube" target="_blank">
+                        <div class="social-icon-symbol">▶</div>
+                        <div class="social-icon-name">YouTube</div>
+                    </a>
+                    <a href="https://github.com/mrrearm" class="social-icon github" target="_blank">
+                        <div class="social-icon-symbol">G</div>
+                        <div class="social-icon-name">GitHub</div>
+                    </a>
+                    <a href="https://x.com/rayrearm" class="social-icon twitter" target="_blank">
+                        <div class="social-icon-symbol">X</div>
+                        <div class="social-icon-name">X</div>
+                    </a>
+                </div>
+                <div class="code-line">>Prima o poi capirai, come ho fatto anch'io, che una cosa è conoscere il sentiero giusto, un'altra è imboccarlo()</div>
+            </section>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-code">> benvenuti.nel mondo(vero)</div>
+            <p class="footer-text">© 2025 Mr Rearm - Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+    
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">↑</button>
+    
+    <script>
+        // Matrix Rain Effect
+        function createMatrixRain() {
+            const matrixBg = document.getElementById('matrixBg');
+            const characters = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワヲン0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            const columns = Math.floor(window.innerWidth / 20);
+            
+            // Clear existing columns
+            matrixBg.innerHTML = '';
+            
+            for (let i = 0; i < columns; i++) {
+                const column = document.createElement('div');
+                column.className = 'matrix-column';
+                column.style.left = `${(i * 20)}px`;
+                column.style.animationDuration = `${5 + Math.random() * 10}s`;
+                column.style.animationDelay = `${Math.random() * 5}s`;
+                
+                // Create characters for this column
+                let content = '';
+                const charCount = 30 + Math.floor(Math.random() * 20);
+                for (let j = 0; j < charCount; j++) {
+                    content += characters.charAt(Math.floor(Math.random() * characters.length));
+                }
+                
+                column.textContent = content;
+                matrixBg.appendChild(column);
+            }
+        }
+        
+        // Smooth scroll function with offset
+        function smoothScroll(targetId) {
+            const target = document.getElementById(targetId);
+            if (target) {
+                const offset = 80; // Same as navbar height
+                const targetPosition = target.getBoundingClientRect().top;
+                const offsetPosition = targetPosition + window.pageYOffset - offset;
+                
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+        
+        // Play Video Function
+        function playVideo(videoId) {
+            const overlay = document.getElementById('videoOverlay');
+            const frame = document.getElementById('videoFrame');
+            frame.src = `https://www.youtube.com/embed/${videoId}?autoplay=1`;
+            overlay.style.display = 'flex';
+            document.body.style.overflow = 'hidden';
+        }
+        
+        // Close Video Function
+        function closeVideo() {
+            const overlay = document.getElementById('videoOverlay');
+            const frame = document.getElementById('videoFrame');
+            frame.src = '';
+            overlay.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }
+        
+        // Scroll to Top Function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Show/Hide Scroll to Top Button
+        window.addEventListener('scroll', function() {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Close video when clicking outside
+        document.getElementById('videoOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeVideo();
+            }
+        });
+        
+        // Initialize everything when DOM is loaded
+        document.addEventListener('DOMContentLoaded', function() {
+            createMatrixRain();
+            
+            // Set up social icons
+            const youtubeIcon = document.querySelector('.youtube .social-icon-symbol');
+            if (youtubeIcon) {
+                youtubeIcon.innerHTML = '▶';
+                youtubeIcon.style.fontSize = '36px';
+            }
+            
+            // Set up Instagram icon
+            const instagramIcon = document.querySelector('.instagram .social-icon-symbol');
+            if (instagramIcon) {
+                instagramIcon.innerHTML = '';
+                instagramIcon.style.position = 'relative';
+                instagramIcon.style.width = '30px';
+                instagramIcon.style.height = '30px';
+                instagramIcon.style.border = '2px solid #00ff00';
+                instagramIcon.style.borderRadius = '8px';
+                
+                const innerCircle = document.createElement('div');
+                innerCircle.style.position = 'absolute';
+                innerCircle.style.width = '12px';
+                innerCircle.style.height = '12px';
+                innerCircle.style.border = '2px solid #00ff00';
+                innerCircle.style.borderRadius = '50%';
+                innerCircle.style.top = '50%';
+                innerCircle.style.left = '50%';
+                innerCircle.style.transform = 'translate(-50%, -50%)';
+                
+                const dot = document.createElement('div');
+                dot.style.position = 'absolute';
+                dot.style.width = '6px';
+                dot.style.height = '6px';
+                dot.style.background = '#00ff00';
+                dot.style.borderRadius = '50%';
+                dot.style.top = '20%';
+                dot.style.right = '20%';
+                
+                instagramIcon.appendChild(innerCircle);
+                instagramIcon.appendChild(dot);
+            }
+            
+            // Set up navigation links
+            document.querySelectorAll('.nav-links a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    smoothScroll(targetId);
+                });
+            });
+        });
+        
+        // Recreate matrix rain on resize
+        window.addEventListener('resize', function() {
+            createMatrixRain();
+        });
+    </script>
+</body>
+</html>
