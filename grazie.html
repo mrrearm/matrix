@@ -1,0 +1,728 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grazie - Matrix Interface</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Orbitron', monospace;
+            background: #000;
+            color: #00ff00;
+            overflow-x: hidden;
+            cursor: crosshair;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        /* Static Matrix Background Pattern (removed animation) */
+        .matrix-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+            overflow: hidden;
+            background: 
+                radial-gradient(circle at 20% 20%, rgba(0, 255, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(0, 255, 0, 0.05) 0%, transparent 50%),
+                linear-gradient(45deg, rgba(0, 255, 0, 0.02) 25%, transparent 25%),
+                linear-gradient(-45deg, rgba(0, 255, 0, 0.02) 25%, transparent 25%);
+            background-size: 100px 100px, 150px 150px, 20px 20px, 20px 20px;
+        }
+        
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            padding: 15px 20px;
+            z-index: 100;
+            border-bottom: 1px solid #00ff00;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 22px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 20px;
+        }
+        
+        .nav-links a {
+            color: #00ff00;
+            text-decoration: none;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+            transition: all 0.3s;
+            padding: 8px 12px;
+            border: 1px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .nav-links a::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            transition: left 0.5s;
+        }
+        
+        .nav-links a:hover::before {
+            left: 100%;
+        }
+        
+        .nav-links a:hover {
+            border-color: #00ff00;
+            box-shadow: 0 0 15px #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        /* Main Content */
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 100px 20px 40px;
+            min-height: calc(100vh - 140px);
+        }
+        
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .thank-you-section {
+            padding: 60px;
+            border: 2px solid #00ff00;
+            background: rgba(0, 0, 0, 0.9);
+            position: relative;
+            transition: all 0.5s;
+            backdrop-filter: blur(10px);
+            border-radius: 10px;
+        }
+        
+        .thank-you-section::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #00ff00, transparent, #00ff00, transparent, #00ff00);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+            border-radius: 10px;
+        }
+        
+        .thank-you-section:hover::before {
+            opacity: 1;
+        }
+        
+        .thank-you-section:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 50px rgba(0, 255, 0, 0.4);
+        }
+        
+        .main-title {
+            font-size: 48px;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-shadow: 0 0 20px #00ff00;
+            background: linear-gradient(45deg, #00ff00, #00cc00, #00ff00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .subtitle {
+            font-size: 24px;
+            margin-bottom: 40px;
+            opacity: 0.9;
+            text-shadow: 0 0 10px #00ff00;
+            animation: fadeInUp 1s ease-out 0.5s both;
+        }
+        
+        @keyframes fadeInUp {
+            0% {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            100% {
+                opacity: 0.9;
+                transform: translateY(0);
+            }
+        }
+        
+        .thank-you-message {
+            font-size: 18px;
+            line-height: 1.8;
+            margin-bottom: 40px;
+            text-align: left;
+            padding: 30px;
+            border: 1px solid rgba(0, 255, 0, 0.3);
+            background: rgba(0, 255, 0, 0.05);
+            border-radius: 5px;
+            animation: fadeInUp 1s ease-out 1s both;
+        }
+        
+        .code-line {
+            font-family: 'Courier New', monospace;
+            color: rgba(0, 255, 0, 0.8);
+            background: rgba(0, 255, 0, 0.1);
+            padding: 20px;
+            margin: 30px 0;
+            border-left: 4px solid #00ff00;
+            font-size: 16px;
+            border-radius: 0 5px 5px 0;
+        }
+        
+        .action-buttons {
+            display: flex;
+            gap: 25px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 40px;
+            animation: fadeInUp 1s ease-out 1.5s both;
+        }
+        
+        .btn {
+            color: #00ff00;
+            text-decoration: none;
+            font-weight: bold;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            border: 2px solid #00ff00;
+            padding: 15px 30px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            border-radius: 5px;
+            backdrop-filter: blur(5px);
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            transition: left 0.6s;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            left: 100%;
+        }
+        
+        .btn::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #00ff00;
+            z-index: -2;
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.4s;
+        }
+        
+        .btn:hover::after {
+            transform: scaleX(1);
+        }
+        
+        .btn:hover {
+            color: #000;
+            text-shadow: none;
+            box-shadow: 0 0 25px #00ff00;
+            transform: translateY(-3px);
+        }
+        
+        .btn.primary {
+            background: rgba(0, 255, 0, 0.1);
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .social-links {
+            margin-top: 50px;
+            animation: fadeInUp 1s ease-out 2s both;
+        }
+        
+        .social-title {
+            font-size: 20px;
+            margin-bottom: 25px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            opacity: 0.8;
+        }
+        
+        .social-icons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+        
+        .social-icon {
+            width: 60px;
+            height: 60px;
+            border: 2px solid #00ff00;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-decoration: none;
+            color: #00ff00;
+            font-size: 24px;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+        
+        .social-icon::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, transparent, #00ff00);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.4s;
+            border-radius: 50%;
+        }
+        
+        .social-icon:hover::before {
+            opacity: 1;
+        }
+        
+        .social-icon:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 25px rgba(0, 255, 0, 0.4);
+            text-shadow: 0 0 15px #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+        }
+        
+        /* Instagram Icon Styling - Fixed with nested spans */
+        .instagram-icon {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .ig-outer {
+            width: 24px;
+            height: 24px;
+            border: 2px solid currentColor;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+        
+        .ig-inner {
+            width: 8px;
+            height: 8px;
+            border: 2px solid currentColor;
+            border-radius: 50%;
+            display: block;
+        }
+        
+        .ig-outer::before {
+            content: '';
+            position: absolute;
+            top: 4px;
+            right: 4px;
+            width: 4px;
+            height: 4px;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+        }
+        
+        /* Footer */
+        footer {
+            background: rgba(0, 0, 0, 0.9);
+            border-top: 1px solid #00ff00;
+            padding: 30px 20px;
+            text-align: center;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            opacity: 0.7;
+        }
+        
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .footer-text {
+            font-family: 'Orbitron', monospace;
+            color: #00ff00;
+            font-size: 14px;
+            letter-spacing: 1px;
+            text-shadow: 0 0 10px #00ff00;
+            opacity: 0.8;
+        }
+        
+        .footer-code {
+            font-family: 'Courier New', monospace;
+            color: #00ff00;
+            background: rgba(0, 255, 0, 0.1);
+            padding: 8px 15px;
+            margin: 15px auto;
+            border: 1px solid #00ff00;
+            max-width: 350px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.4);
+            font-size: 12px;
+            border-radius: 3px;
+        }
+        
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 60px;
+            height: 60px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 200;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+            text-shadow: 0 0 10px #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+        }
+        
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+        
+        .scroll-to-top:hover {
+            background: #00ff00;
+            color: #000;
+            transform: scale(1.1);
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .nav-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .logo {
+                font-size: 20px;
+                margin-bottom: 15px;
+            }
+            
+            main {
+                padding: 140px 15px 40px;
+                min-height: calc(100vh - 180px);
+            }
+            
+            .thank-you-section {
+                padding: 30px 20px;
+                margin: 0 10px;
+            }
+            
+            .main-title {
+                font-size: 36px;
+                margin-bottom: 20px;
+                letter-spacing: 2px;
+            }
+            
+            .subtitle {
+                font-size: 20px;
+                margin-bottom: 30px;
+            }
+            
+            .thank-you-message {
+                font-size: 16px;
+                padding: 20px;
+                margin-bottom: 30px;
+            }
+            
+            .code-line {
+                font-size: 14px;
+                padding: 15px;
+                margin: 20px 0;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+                margin-top: 30px;
+            }
+            
+            .btn {
+                padding: 12px 25px;
+                font-size: 12px;
+                width: 100%;
+                max-width: 250px;
+            }
+            
+            .social-icons {
+                gap: 15px;
+            }
+            
+            .social-icon {
+                width: 50px;
+                height: 50px;
+                font-size: 20px;
+            }
+            
+            .social-links {
+                margin-top: 40px;
+            }
+            
+            .social-title {
+                font-size: 18px;
+                margin-bottom: 20px;
+            }
+            
+            .scroll-to-top {
+                width: 50px;
+                height: 50px;
+                bottom: 20px;
+                right: 20px;
+                font-size: 20px;
+            }
+            
+            .footer-text {
+                font-size: 12px;
+            }
+            
+            .footer-code {
+                font-size: 10px;
+                padding: 6px 12px;
+            }
+            
+            .instagram-icon::after {
+                width: 20px;
+                height: 20px;
+                border-radius: 4px;
+            }
+            
+            .instagram-icon::before {
+                width: 6px;
+                height: 6px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .main-title {
+                font-size: 28px;
+            }
+            
+            .subtitle {
+                font-size: 18px;
+            }
+            
+            .thank-you-message {
+                font-size: 14px;
+                text-align: center;
+            }
+            
+            .thank-you-section {
+                padding: 25px 15px;
+            }
+        }
+        
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 10px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: #000;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 5px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: #00cc00;
+        }
+    </style>
+</head>
+<body>
+    <!-- Static Matrix Background -->
+    <div class="matrix-bg"></div>
+    
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">Matrix</div>
+            <ul class="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="index.html#about">About</a></li>
+                <li><a href="index.html#services">Servizi</a></li>
+                <li><a href="index.html#resources">Risorse</a></li>
+                <li><a href="index.html#contact">Contatti</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <!-- Main Content -->
+    <main>
+        <div class="container">
+            <div class="thank-you-section">
+                <h1 class="main-title">Grazie!</h1>
+                <p class="subtitle">Il tuo messaggio è stato inviato con successo</p>
+                
+                <div class="code-line">> messaggio.inviato() == true</div>
+                
+                <div class="thank-you-message">
+                    <p>Grazie per averci contattato! Il tuo messaggio è stato ricevuto con successo nel nostro sistema Matrix. Il nostro team analizzerà la tua richiesta e ti risponderà il prima possibile.</p>
+                    <p>Nel frattempo, continua a seguire il bianconiglio ed esplora le nostre risorse digitali. Ricorda: la realtà è solo una questione di percezione.</p>
+                </div>
+                
+                <div class="code-line">> segui_il_bianconiglio.exe</div>
+                
+                <div class="action-buttons">
+                    <a href="index.html" class="btn primary">Torna alla Home</a>
+                    <a href="index.html#resources" class="btn">Esplora Risorse</a>
+                    <a href="index.html#contact" class="btn">Social Media</a>
+                </div>
+                
+                <div class="social-links">
+                    <p class="social-title">Seguici sui social</p>
+                    <div class="social-icons">
+                        <a href="https://facebook.com/mrrearm" class="social-icon" target="_blank" title="Facebook">F</a>
+                        <a href="https://instagram.com/mrrearm" class="social-icon instagram-icon" target="_blank" title="Instagram">
+                            <span class="ig-outer">
+                                <span class="ig-inner"></span>
+                            </span>
+                        </a>
+                        <a href="https://www.tiktok.com/@raydrearm?_t=ZN-8xMCGs79DhG&_r=1" class="social-icon" target="_blank" title="TikTok">♪</a>
+                        <a href="https://youtube.com/@mrrearm" class="social-icon" target="_blank" title="YouTube">▶</a>
+                        <a href="https://github.com/mrrearm" class="social-icon" target="_blank" title="GitHub">G</a>
+                        <a href="https://x.com/rayrearm" class="social-icon" target="_blank" title="X/Twitter">X</a>
+                    </div>
+                </div>
+                
+                <div class="code-line">> ricorda: non_esiste_il_cucchiaio()</div>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-code">> grazie.per_la_fiducia()</div>
+            <p class="footer-text">© 2025 Mr Rearm - Tutti i diritti riservati.</p>
+        </div>
+    </footer>
+    
+    <!-- Scroll to Top Button -->
+    <button class="scroll-to-top" id="scrollToTop" onclick="scrollToTop()">↑</button>
+    
+    <script>
+        // Scroll to Top Function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Show/Hide Scroll to Top Button
+        window.addEventListener('scroll', function() {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+            if (window.pageYOffset > 300) {
+                scrollToTopBtn.classList.add('visible');
+            } else {
+                scrollToTopBtn.classList.remove('visible');
+            }
+        });
+        
+        // Add entrance animation to main content
+        document.addEventListener('DOMContentLoaded', function() {
+            const thankYouSection = document.querySelector('.thank-you-section');
+            setTimeout(() => {
+                thankYouSection.style.opacity = '0';
+                thankYouSection.style.transform = 'translateY(50px)';
+                thankYouSection.style.transition = 'all 1s ease-out';
+                
+                setTimeout(() => {
+                    thankYouSection.style.opacity = '1';
+                    thankYouSection.style.transform = 'translateY(0)';
+                }, 100);
+            }, 100);
+        });
+    </script>
+</body>
+</html>
