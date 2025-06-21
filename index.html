@@ -195,8 +195,8 @@
         
         /* Modifica specifica per la sezione home */
         #home {
-            padding-top: 100px; /* Aggiunto più spazio sopra */
-            margin-top: 40px; /* Aggiunto margine superiore */
+            padding-top: 100px;
+            margin-top: 40px;
         }
         
         .section::before {
@@ -348,6 +348,299 @@
             box-shadow: 0 0 15px #00ff00;
         }
         
+        /* Contact Form Styles */
+        .contact-form-container {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            padding: 40px;
+            margin: 40px 0;
+            position: relative;
+            overflow: hidden;
+            backdrop-filter: blur(10px);
+        }
+        
+        .contact-form-container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #00ff00, transparent, #00ff00, transparent, #00ff00);
+            z-index: -1;
+            opacity: 0;
+            transition: opacity 0.5s;
+            animation: borderRotate 4s linear infinite;
+        }
+        
+        @keyframes borderRotate {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .contact-form-container:hover::before {
+            opacity: 0.3;
+        }
+        
+        .contact-form-container::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 255, 0, 0.1), transparent);
+            transition: left 0.8s;
+            pointer-events: none;
+        }
+        
+        .contact-form-container:hover::after {
+            left: 100%;
+        }
+        
+        .contact-form-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 28px;
+            color: #00ff00;
+            text-align: center;
+            margin-bottom: 30px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            text-shadow: 0 0 15px #00ff00;
+            animation: glitch 3s infinite;
+        }
+        
+        .contact-form {
+            display: grid;
+            gap: 25px;
+        }
+        
+        .form-group {
+            position: relative;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        .form-label {
+            font-family: 'Orbitron', monospace;
+            color: #00ff00;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            display: block;
+            text-shadow: 0 0 5px #00ff00;
+            opacity: 0.9;
+        }
+        
+        .form-input,
+        .form-textarea,
+        .form-select {
+            width: 100%;
+            padding: 15px 20px;
+            background: rgba(0, 0, 0, 0.8);
+            border: 2px solid rgba(0, 255, 0, 0.3);
+            color: #00ff00;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            transition: all 0.3s;
+            outline: none;
+            position: relative;
+        }
+        
+        .form-input:focus,
+        .form-textarea:focus,
+        .form-select:focus {
+            border-color: #00ff00;
+            box-shadow: 0 0 15px rgba(0, 255, 0, 0.3);
+            text-shadow: 0 0 5px #00ff00;
+            background: rgba(0, 255, 0, 0.05);
+        }
+        
+        .form-input::placeholder,
+        .form-textarea::placeholder {
+            color: rgba(0, 255, 0, 0.5);
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 120px;
+            font-family: 'Orbitron', monospace;
+        }
+        
+        .form-select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300ff00' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6,9 12,15 18,9'%3e%3c/polyline%3e%3c/svg%3e");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 20px;
+            padding-right: 50px;
+        }
+        
+        .form-select option {
+            background: #000;
+            color: #00ff00;
+        }
+        
+        .submit-button {
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #00ff00;
+            color: #00ff00;
+            padding: 18px 40px;
+            font-family: 'Orbitron', monospace;
+            font-size: 16px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            cursor: pointer;
+            transition: all 0.4s;
+            position: relative;
+            overflow: hidden;
+            margin-top: 20px;
+            text-shadow: 0 0 10px #00ff00;
+            backdrop-filter: blur(5px);
+        }
+        
+        .submit-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00ff00, transparent);
+            transition: left 0.5s;
+        }
+        
+        .submit-button:hover::before {
+            left: 100%;
+        }
+        
+        .submit-button:hover {
+            background: #00ff00;
+            color: #000;
+            box-shadow: 0 0 25px rgba(0, 255, 0, 0.6);
+            transform: translateY(-2px);
+            text-shadow: none;
+        }
+        
+        .submit-button:active {
+            transform: translateY(0);
+        }
+        
+        .form-code-line {
+            font-family: 'Courier New', monospace;
+            color: rgba(0, 255, 0, 0.6);
+            background: rgba(0, 255, 0, 0.05);
+            padding: 10px 15px;
+            margin: 20px 0;
+            border-left: 3px solid rgba(0, 255, 0, 0.3);
+            font-size: 12px;
+            text-align: center;
+            animation: typing 6s steps(60) infinite;
+            overflow: hidden;
+            white-space: nowrap;
+        }
+        
+        /* Status Messages */
+        .form-status {
+            padding: 15px;
+            margin: 20px 0;
+            border: 2px solid;
+            font-family: 'Orbitron', monospace;
+            font-size: 14px;
+            text-align: center;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.5s;
+        }
+        
+        .form-status.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .form-status.success {
+            background: rgba(0, 255, 0, 0.1);
+            border-color: #00ff00;
+            color: #00ff00;
+            text-shadow: 0 0 10px #00ff00;
+        }
+        
+        .form-status.error {
+            background: rgba(255, 0, 0, 0.1);
+            border-color: #ff0000;
+            color: #ff0000;
+            text-shadow: 0 0 10px #ff0000;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .contact-form-container {
+                padding: 25px 20px;
+                margin: 20px 0;
+            }
+            
+            .contact-form-title {
+                font-size: 22px;
+                margin-bottom: 25px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+            
+            .form-input,
+            .form-textarea,
+            .form-select {
+                padding: 12px 15px;
+                font-size: 14px;
+            }
+            
+            .form-textarea {
+                min-height: 100px;
+            }
+            
+            .submit-button {
+                padding: 15px 30px;
+                font-size: 14px;
+                letter-spacing: 1px;
+            }
+            
+            .form-code-line {
+                font-size: 10px;
+                padding: 8px 12px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .contact-form-container {
+                padding: 20px 15px;
+            }
+            
+            .contact-form-title {
+                font-size: 18px;
+            }
+            
+            .form-input,
+            .form-textarea,
+            .form-select {
+                padding: 10px 12px;
+            }
+            
+            .submit-button {
+                padding: 12px 25px;
+                font-size: 13px;
+            }
+        }
+        
         /* Responsive */
         @media (max-width: 768px) {
             .nav-links {
@@ -376,7 +669,7 @@
             }
             
             #home {
-                padding-top: 80px; /* Modifica per mobile */
+                padding-top: 80px;
                 margin-top: 20px;
             }
             
@@ -860,6 +1153,75 @@
                         <div class="social-icon-name">X</div>
                     </a>
                 </div>
+
+                <!-- Contact Form Container -->
+                <div class="contact-form-container">
+                    <h3 class="contact-form-title">Contatta Neo</h3>
+                    <div class="form-code-line">>Inizio connessione sicura a Matrix()</div>
+                    
+                    <form class="contact-form" id="matrixContactForm" action="https://api.web3forms.com/submit" method="POST" target="_self">
+                        <input type="hidden" name="access_key" value="8935fffe-9077-4c80-9c93-c43cba64a6a2">
+                        <input type="hidden" name="redirect" value="https://mrrearm.github.io/matrix/grazie.html">
+                        <input type="hidden" name="subject" value="Nuovo messaggio dal sito Matrix">
+                        <input type="checkbox" name="botcheck" style="display:none">
+                        
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label">Nome</label>
+                                <input 
+                                    type="text" 
+                                    id="firstName" 
+                                    name="name" 
+                                    class="form-input" 
+                                    placeholder="Inserisci il tuo nome"
+                                    required
+                                >
+                            </div>
+                            <div class="form-group">
+                                <label for="email" class="form-label">Email</label>
+                                <input 
+                                    type="email" 
+                                    id="email" 
+                                    name="email" 
+                                    class="form-input" 
+                                    placeholder="neo@matrix.com"
+                                    required
+                                >
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="subject" class="form-label">Argomento</label>
+                            <select id="subject" name="subject" class="form-select" required>
+                                <option value="">Seleziona un argomento</option>
+                                <option value="Sviluppo Web">Sviluppo Web</option>
+                                <option value="Consulenza">Consulenza</option>
+                                <option value="Supporto Tecnico">Supporto Tecnico</option>
+                                <option value="Collaborazione">Collaborazione</option>
+                                <option value="Altro">Altro</option>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="message" class="form-label">Messaggio</label>
+                            <textarea 
+                                id="message" 
+                                name="message" 
+                                class="form-textarea" 
+                                placeholder="Descrivi il tuo progetto o la tua richiesta..."
+                                required
+                            ></textarea>
+                        </div>
+
+                        <div class="form-status" id="formStatus"></div>
+
+                        <button type="submit" class="submit-button">
+                            Invia Messaggio
+                        </button>
+                    </form>
+
+                    <div class="form-code-line">>Non ci sono agenti Smith nei paragi()</div>
+                </div>
                 <div class="code-line">>Prima o poi capirai, come ho fatto anch'io, che una cosa è conoscere il sentiero giusto, un'altra è imboccarlo()</div>
             </section>
         </div>
@@ -962,7 +1324,7 @@
                 closeVideo();
             }
         });
-        
+
         // Initialize everything when DOM is loaded
         document.addEventListener('DOMContentLoaded', function() {
             createMatrixRain();
